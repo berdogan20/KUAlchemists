@@ -54,20 +54,21 @@ public class PublicationBoard
 		
 		boolean comparaison = false;
 		
-		Token alchemyMarker = selectedTheory.getAlchemyMarker();
-		Aspect[] aspects = alchemyMarker.getTokenAspects();
+		String actualToken = selectedTheory.getIngredient().getToken().getName();
 		
-		for (Aspect a: aspects)
-		{
-			if (a.toString().contains(selectedAspect))
-			{
-				Theory.getAllTheories().remove(selectedTheory);
-				Theory.getDebunkedTheories().put(selectedTheory, false);
-				selectedTheory.getOwner().setReputationPoints(selectedTheory.getOwner().getReputationPoints() - 1);
-
-				comparaison = true;
-			}
+		// if debunk is correct
+		if (!actualToken.contains(selectedAspect)) {
+			comparaison = true;
+			Theory.getAllTheories().remove(selectedTheory);
+			Theory.getDebunkedTheories().put(selectedTheory, false);
+			selectedTheory.getOwner().setReputationPoints(selectedTheory.getOwner().getReputationPoints() - 1);
 		}
+		
+		// if debunk is wrong
+		if (actualToken.contains(selectedAspect)) {
+			comparaison = false;
+		}
+		
 		return comparaison;
 		
 	}

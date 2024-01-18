@@ -384,7 +384,7 @@ public class StartGameFrame extends GeneralFrame {
     {
     	startGameButton = new GameButton("Start Game");
     	backgroundPanel.add(startGameButton);
-    	startGameButton.setBounds(648, 647, 200, 30);
+    	startGameButton.setBounds(648, 547, 200, 30);
     	startGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -510,7 +510,7 @@ public class StartGameFrame extends GeneralFrame {
     {
     	howToPlayButton = new GameButton("How to Play?");
     	backgroundPanel.add(howToPlayButton);
-    	howToPlayButton.setBounds(648, 697, 200, 30);
+    	howToPlayButton.setBounds(648, 597, 200, 30);
     	howToPlayButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -523,7 +523,7 @@ public class StartGameFrame extends GeneralFrame {
     {
     	exitGameButton = new GameButton("Exit Game");
     	backgroundPanel.add(exitGameButton);
-    	exitGameButton.setBounds(648, 747, 200, 30);
+    	exitGameButton.setBounds(648, 647, 200, 30);
     	exitGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -28,9 +28,12 @@ public class DebunkTheoryFrame extends FunctionalFrame{
 
 	private DebunkTheoryController controller;
 	private JLabel selectedAspectLabel;
+	private JPanel aspectPanel;
 	private String selectedAspect;
 	private JLabel selectedTheoryLabel;
+	private JLabel selectedTheoryAlchemyMarkerLabel;
 	private String selectedTheory;
+	private Theory selected = null;
 	private GameButton debunkButton;
 	private JButton returnBtn;
 
@@ -38,10 +41,10 @@ public class DebunkTheoryFrame extends FunctionalFrame{
 	public DebunkTheoryFrame(KUAlchemistsGame game) {
 		super(game);
 		setBackground("/FunctionalBackgroundImages/debunkTheoryBackground.png");
+		setAspectsPanel();
 		initializeSelectedAspectLabel();
 		initializeSelectedTheoryLabel();
 		setDebunkButton();
-		setAspects();
 		setTheoryCards();
 		setReturnBtn();
 	}
@@ -71,7 +74,7 @@ public class DebunkTheoryFrame extends FunctionalFrame{
     	controller = new DebunkTheoryController(game);
     	System.out.println(selectedTheory);
    		System.out.println(selectedAspect);
-    		
+    	
     	debunkButton.addActionListener(new ActionListener() 
     	{
             @Override
@@ -93,6 +96,7 @@ public class DebunkTheoryFrame extends FunctionalFrame{
             	}
             }
         });
+        
     	
     }
 	
@@ -108,57 +112,76 @@ public class DebunkTheoryFrame extends FunctionalFrame{
     	selectedTheoryLabel = new JLabel();
     	selectedTheoryLabel.setBounds(750, 450, 200, 150);
         backgroundPanel.add(selectedTheoryLabel);
+        
+        selectedTheoryAlchemyMarkerLabel =  new JLabel();
+        selectedTheoryAlchemyMarkerLabel.setBounds(30, 67, 50, 65);
+        selectedTheoryLabel.add(selectedTheoryAlchemyMarkerLabel);
+
     }
 	
-	private void setAspects()
+	private void setAspectsPanel()
 	{
-		JPanel aspectPanel = new JPanel(null);
+		
+		aspectPanel = new JPanel(null);
 		aspectPanel.setBounds(80, 220, 1200, 100);
 		aspectPanel.setOpaque(false);
 
-	    ButtonGroup aspectGroup = new ButtonGroup(); // Create a button group
-
-	    int buttonWidth = 75;
-	    int buttonHeight = 85;
-	    int xOffset = 70;
-	    int yOffset = 20;
-
-	    
-	    for (int i = 0; i < Potion.potions.length; i++) {
-	    	
-	    	String potion = Potion.potions[i];
-	    		    	
-	        JToggleButton aspectButton = new JToggleButton();
-	    	aspectButton.addActionListener(new ActionListener() 
-	    	{
-	            @Override
-	            public void actionPerformed(ActionEvent e) {	            		
-	                	 PlaySong.play("ButtonClick");                      	
-	            }
-	        });
-	        
-	        
-	        aspectButton.setBackground(null);
-	        aspectButton.setOpaque(false);
-	        aspectButton.setContentAreaFilled(false);
-	        aspectButton.setBorderPainted(false);
-	        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/potionImages/" + potion + ".png"));
-	        Image image = imageIcon.getImage().getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
-	        aspectButton.setIcon(new ImageIcon(image));
-
-	        int xPosition = (buttonWidth + xOffset) * (i % 8);
-	        int yPosition = (buttonHeight + yOffset) * (i / 8);
-
-	        aspectButton.setBounds(xPosition, yPosition, buttonWidth, buttonHeight);
-	        aspectPanel.add(aspectButton);
-
-	        aspectGroup.add(aspectButton);
-	        aspectButton.setActionCommand(potion); 
-	        aspectButton.addActionListener(e -> handleAspectSelection(potion)); 
-	    }
-
 	    backgroundPanel.setLayout(null);
 	    backgroundPanel.add(aspectPanel);
+	}
+	
+	private void setAspects() {
+		
+		 aspectPanel.removeAll();
+
+			
+			ButtonGroup aspectGroup = new ButtonGroup(); // Create a button group
+
+		    int buttonWidth = 75;
+		    int buttonHeight = 85;
+		    int xOffset = 70;
+		    int yOffset = 20;
+
+	    	int j = 0;
+	    	
+		    for (int i = 0; i < Potion.potions.length; i++) {
+		    	
+		    	String potion = Potion.potions[i];
+		    	
+		    	if (!selected.getAlchemyMarker().getName().contains(potion)) {
+		    		continue;
+		    	}
+		    		    	
+		        JToggleButton aspectButton = new JToggleButton();
+		    	aspectButton.addActionListener(new ActionListener() 
+		    	{
+		            @Override
+		            public void actionPerformed(ActionEvent e) {	            		
+		                	 PlaySong.play("ButtonClick");                      	
+		            }
+		        });
+		        
+		        
+		        aspectButton.setBackground(null);
+		        aspectButton.setOpaque(false);
+		        aspectButton.setContentAreaFilled(false);
+		        aspectButton.setBorderPainted(false);
+		        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/potionImages/" + potion + ".png"));
+		        Image image = imageIcon.getImage().getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
+		        aspectButton.setIcon(new ImageIcon(image));
+
+		        int xPosition = (buttonWidth + xOffset) * (j % 8);
+		        int yPosition = (buttonHeight + yOffset) * (j / 8);
+
+		        aspectButton.setBounds(xPosition, yPosition, buttonWidth, buttonHeight);
+		        aspectPanel.add(aspectButton);
+
+		        aspectGroup.add(aspectButton);
+		        aspectButton.setActionCommand(potion); 
+		        aspectButton.addActionListener(e -> handleAspectSelection(potion)); 
+		        
+		        j++;
+		    }
 	}
 	
 	private void handleAspectSelection(String aspect)
@@ -169,6 +192,7 @@ public class DebunkTheoryFrame extends FunctionalFrame{
         	Image image = imageIcon.getImage().getScaledInstance(150, 170, Image.SCALE_SMOOTH);
         	selectedAspectLabel.setIcon(new ImageIcon(image));
             System.out.println(selectedAspect + " selected");
+            
         } 
         else 
         {
@@ -248,11 +272,27 @@ public class DebunkTheoryFrame extends FunctionalFrame{
 	private void handleTheorySelection(String selectedTheory)
 	{
 		if (this.selectedTheory == null || !this.selectedTheory.equals(selectedTheory)) {
-            // set selected marker image
+            
+			// set selected marker image
 			this.selectedTheory = selectedTheory;
-            ImageIcon imageIcon = new ImageIcon(getClass().getResource("/theoryImages/" + this.selectedTheory + ".png"));
+			
+			// find selected theory
+		    for (Theory theory: Theory.getAllTheories()) {
+		    	if (theory.getIngredient().getName().equals(selectedTheory)) {
+		    		selected = theory;
+		    	}
+		    }
+		    setAspects();
+		    
+			ImageIcon imageIcon = new ImageIcon(getClass().getResource("/theoryImages/" + this.selectedTheory + ".png"));
         	Image image = imageIcon.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH);
             selectedTheoryLabel.setIcon(new ImageIcon(image));
+            
+            ImageIcon imageIcon2 = new ImageIcon(getClass().getResource("/alchemyMarkerImages/" + this.selected.getAlchemyMarker() + ".png"));
+        	Image image2 = imageIcon2.getImage().getScaledInstance(50, 65, Image.SCALE_SMOOTH);
+        	selectedTheoryAlchemyMarkerLabel.setIcon(new ImageIcon(image2));
+            
+            
             System.out.println(selectedTheory + " selected");
         } 
         else 
